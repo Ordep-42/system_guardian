@@ -61,19 +61,7 @@ void display_menu(uint8_t* ssd, struct render_area* frame_area, uint8_t select) 
     render_on_display(ssd, frame_area);
 }
 
-int main()
-{
-    stdio_init_all();
-    
-    init_joystick();
-    init_display();
-    ssd1306_init();
-
-    gpio_init(22);
-    gpio_set_dir(22, GPIO_IN);
-    gpio_pull_up(22);
-    gpio_set_irq_enabled_with_callback(22, GPIO_IRQ_EDGE_FALL, true, &IRQ_callback);
-
+void menu_task() {
     struct render_area frame_area = {
         start_column : 0,
         end_column : ssd1306_width - 1,
@@ -123,5 +111,22 @@ int main()
         }
         sleep_ms(100);
     }
+}
+
+int main()
+{
+    stdio_init_all();
+    
+    init_joystick();
+    init_display();
+    ssd1306_init();
+
+    gpio_init(22);
+    gpio_set_dir(22, GPIO_IN);
+    gpio_pull_up(22);
+    gpio_set_irq_enabled_with_callback(22, GPIO_IRQ_EDGE_FALL, true, &IRQ_callback);
+
+    menu_task();
+
     return 0;
 }

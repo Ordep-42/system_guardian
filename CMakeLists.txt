@@ -58,7 +58,7 @@ target_link_libraries(U7_projeto_final
         hardware_i2c
         hardware_timer
         hardware_clocks
-        
+        hardware_adc
         )
 
 pico_add_extra_outputs(U7_projeto_final)

@@ -2,6 +2,8 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "inc/aht10/aht.h"
+#include "inc/alarm/alarm.h"
+#include "inc/led_rgb/led.h"
 
 void termo_task(void *pvParameters)
 {
@@ -13,6 +15,13 @@ void termo_task(void *pvParameters)
         if (aht_read_data(&aht, &data) == PICO_ERROR_NONE) {
             printf("Temperature: %.2f C\n", data.temperature);
             printf("Humidity: %.2f %%\n", data.humidity);
+            if (data.temperature >= 30) {
+                led_set_color(LED_R_PIN, LED_G_PIN, LED_B_PIN, true, true, false);
+            } else if (data.temperature > 40) {
+                alarm_trigger(true, false, false, 300);
+            } else {
+                led_set_color(LED_R_PIN, LED_G_PIN, LED_B_PIN, false, true, false);
+            }
         }
         sleep_ms(1000);
     }
@@ -21,6 +30,9 @@ void termo_task(void *pvParameters)
 int main()
 {
     stdio_init_all();
+
+    alarm_init();
+    alarm_arm();
 
     termo_task(NULL);
 }

@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(U7_projeto_final main.c )
+add_executable(U7_projeto_final main.c inc/led_rgb/led.c inc/buzzer/buzzer.c inc/alarm/alarm.c)
 
 pico_set_program_name(U7_projeto_final "U7_projeto_final")
 pico_set_program_version(U7_projeto_final "0.1")
@@ -58,7 +58,7 @@ target_link_libraries(U7_projeto_final
         hardware_i2c
         hardware_timer
         hardware_clocks
-        
+        hardware_pwm
         )
 
 pico_add_extra_outputs(U7_projeto_final)

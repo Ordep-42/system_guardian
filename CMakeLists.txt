@@ -64,6 +64,7 @@ target_link_libraries(U7_projeto_final
         hardware_timer
         hardware_clocks
         hardware_pwm
+        hardware_adc
         )
 
 pico_add_extra_outputs(U7_projeto_final)

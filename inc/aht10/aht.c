@@ -72,8 +72,7 @@ int aht_calibrate(aht_dev_t *dev)
         return PICO_ERROR_IO;
     }
     sleep_ms(SOFT_RESET_MS);
-    if (i2c_read_blocking(dev->i2c_port, dev->i2c_address, cal_data, 1,
-                          false) == PICO_ERROR_GENERIC) {
+    if (aht_read_command(dev, &cal_data, 1) == PICO_ERROR_GENERIC) {
         return PICO_ERROR_IO;
     }
 

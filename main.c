@@ -15,10 +15,10 @@ void termo_task(void *pvParameters)
         if (aht_read_data(&aht, &data) == PICO_ERROR_NONE) {
             printf("Temperature: %.2f C\n", data.temperature);
             printf("Humidity: %.2f %%\n", data.humidity);
-            if (data.temperature >= 30) {
-                led_set_color(LED_R_PIN, LED_G_PIN, LED_B_PIN, true, true, false);
-            } else if (data.temperature > 40) {
+            if (data.temperature >= 40 || data.humidity >= 90) {
                 alarm_trigger(true, false, false, 300);
+            } else if ((data.temperature >= 30 && data.temperature < 40) || (data.humidity < 90 && data.humidity >= 80)) {
+                led_set_color(LED_R_PIN, LED_G_PIN, LED_B_PIN, true, true, false);
             } else {
                 led_set_color(LED_R_PIN, LED_G_PIN, LED_B_PIN, false, true, false);
             }

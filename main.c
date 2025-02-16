@@ -1,47 +1,37 @@
 #include <stdio.h>
+#include <string.h>
 #include "pico/stdlib.h"
-#include "hardware/i2c.h"
-#include "hardware/timer.h"
-#include "hardware/clocks.h"
+#include "inc/wifi/wifi_driver.h"
+#include "lwip/apps/mqtt.h"
 
-// I2C defines
-// This example will use I2C0 on GPIO8 (SDA) and GPIO9 (SCL) running at 400KHz.
-// Pins can be changed, see the GPIO function select table in the datasheet for information on GPIO assignments
-#define I2C_PORT i2c0
-#define I2C_SDA 8
-#define I2C_SCL 9
+#define WIFI_SSID "Amaral-2.4G"
+#define WIFI_PASS "Tapi.Fred#142126712#AMARAL"
 
-int64_t alarm_callback(alarm_id_t id, void *user_data) {
-    // Put your timeout handler code in here
-    return 0;
-}
-
-
-
-
-int main()
-{
+int main() {
     stdio_init_all();
+    sleep_ms(5000);
 
-    // I2C Initialisation. Using it at 400Khz.
-    i2c_init(I2C_PORT, 400*1000);
-    
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
-    // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
-
-    // Timer example code - This example fires off the callback after 2000ms
-    add_alarm_in_ms(2000, alarm_callback, NULL, false);
-    // For more examples of timer use see https://github.com/raspberrypi/pico-examples/tree/master/timer
-
-    printf("System Clock Frequency is %d Hz\n", clock_get_hz(clk_sys));
-    printf("USB Clock Frequency is %d Hz\n", clock_get_hz(clk_usb));
-    // For more examples of clocks use see https://github.com/raspberrypi/pico-examples/tree/master/clocks
-
-    while (true) {
-        printf("Hello, world!\n");
-        sleep_ms(1000);
+    if (wifi_driver_init()) {
+        printf("Erro ao inicializar o driver Wi-Fi\n");
+        return 1;
     }
+    printf("Conectando a rede Wi-Fi...\n");
+
+    if (wifi_driver_connect(WIFI_SSID, WIFI_PASS, 10000)) {
+        printf("Falha ao conectar ao Wi-Fi\n");
+        return 1;
+    }else {
+        printf("Wi-Fi conectado!\n");
+    }
+    
+    uint8_t *ip_address = wifi_driver_get_ip_address();
+    printf("Endereço IP %d.%d.%d.%d\n", ip_address[0], ip_address[1], ip_address[2], ip_address[3]);
+    
+    while (true) {
+        wifi_driver_poll();
+        sleep_ms(100);
+    }
+
+    wifi_driver_deinit();
+    return 0;
 }

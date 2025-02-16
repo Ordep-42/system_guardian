@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(U7_projeto_final main.c )
+add_executable(U7_projeto_final main.c inc/wifi/wifi_driver.c)
 
 pico_set_program_name(U7_projeto_final "U7_projeto_final")
 pico_set_program_version(U7_projeto_final "0.1")
@@ -58,7 +58,8 @@ target_link_libraries(U7_projeto_final
         hardware_i2c
         hardware_timer
         hardware_clocks
-        
+        pico_cyw43_arch_lwip_threadsafe_background
+        pico_lwip_mqtt
         )
 
 pico_add_extra_outputs(U7_projeto_final)

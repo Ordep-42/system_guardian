@@ -37,3 +37,11 @@ bool wifi_driver_is_connected() {
 int wifi_driver_status() {
     return cyw43_wifi_link_status(&cyw43_state, CYW43_ITF_STA);
 }
+
+void wifi_driver_lwip_begin() {
+    cyw43_arch_lwip_begin();
+}
+
+void wifi_driver_lwip_end() {
+    cyw43_arch_lwip_end();
+}

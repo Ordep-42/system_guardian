@@ -1,2 +1,6 @@
+add_subdirectory(led_rgb)
+add_subdirectory(buzzer)
+add_subdirectory(alarm)
+add_subdirectory(aht10)
 add_subdirectory(wifi)
 add_subdirectory(mqtt)

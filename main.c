@@ -6,10 +6,9 @@
 #include "inc/led_rgb/led.h"
 #include "inc/wifi/wifi_driver.h"
 #include "inc/mqtt/mqtt_client.h"
+#include "lwipopts.h"
+#include "config.h"
 #include "secrets.h"
-
-#define POWER_METER_PIN 28
-#define POWER_METER_ADC 2
 
 void sensor_task(void *pvParameters)
 {

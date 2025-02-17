@@ -31,7 +31,7 @@ int main() {
 
     while (true) {
         if (to_ms_since_boot(get_absolute_time()) - start > 10000) {
-            mqtt_example_publish(MQTT_TOPIC, "Olá, Mundo!");
+            mqtt_client_publish(MQTT_TOPIC, "Olá, Mundo!");
             start = to_ms_since_boot(get_absolute_time());
         }
         wifi_driver_poll();

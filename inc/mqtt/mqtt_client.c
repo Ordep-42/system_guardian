@@ -46,7 +46,7 @@ void mqtt_pub_request_cb(void *arg, err_t result) {
     }
 }
 
-void mqtt_example_publish(char *topic, char *data) {
+void mqtt_client_publish(char *topic, char *data) {
     uint8_t qos = 1;
     uint8_t retain = 0;
     err_t err = mqtt_publish(client, topic, data, strlen(data), qos, retain, mqtt_pub_request_cb, NULL);

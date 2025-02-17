@@ -1,47 +1,43 @@
 #include <stdio.h>
+#include <string.h>
 #include "pico/stdlib.h"
-#include "hardware/i2c.h"
-#include "hardware/timer.h"
-#include "hardware/clocks.h"
-
-// I2C defines
-// This example will use I2C0 on GPIO8 (SDA) and GPIO9 (SCL) running at 400KHz.
-// Pins can be changed, see the GPIO function select table in the datasheet for information on GPIO assignments
-#define I2C_PORT i2c0
-#define I2C_SDA 8
-#define I2C_SCL 9
-
-int64_t alarm_callback(alarm_id_t id, void *user_data) {
-    // Put your timeout handler code in here
-    return 0;
-}
+#include "inc/wifi/wifi_driver.h"
+#include "inc/mqtt/mqtt_client.h"
+#include "secrets.h"
 
 
-
-
-int main()
-{
+int main() {
     stdio_init_all();
+    sleep_ms(5000);
 
-    // I2C Initialisation. Using it at 400Khz.
-    i2c_init(I2C_PORT, 400*1000);
+    if (wifi_driver_init()) {
+        printf("Erro ao inicializar o driver Wi-Fi\n");
+        return 1;
+    }
+    printf("Conectando a rede Wi-Fi...\n");
+
+    if (wifi_driver_connect(WIFI_SSID, WIFI_PASS, 10000)) {
+        printf("Falha ao conectar ao Wi-Fi\n");
+        return 1;
+    }else {
+        printf("Wi-Fi conectado!\n");
+    }
     
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
-    // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
+    printf("Endereço IP %s\n", ip_ntoa(wifi_driver_get_ip_address()));
+    
+    mqtt_init();
 
-    // Timer example code - This example fires off the callback after 2000ms
-    add_alarm_in_ms(2000, alarm_callback, NULL, false);
-    // For more examples of timer use see https://github.com/raspberrypi/pico-examples/tree/master/timer
-
-    printf("System Clock Frequency is %d Hz\n", clock_get_hz(clk_sys));
-    printf("USB Clock Frequency is %d Hz\n", clock_get_hz(clk_usb));
-    // For more examples of clocks use see https://github.com/raspberrypi/pico-examples/tree/master/clocks
+    uint32_t start = to_ms_since_boot(get_absolute_time());
 
     while (true) {
-        printf("Hello, world!\n");
-        sleep_ms(1000);
+        if (to_ms_since_boot(get_absolute_time()) - start > 10000) {
+            mqtt_client_publish(MQTT_TOPIC, "Olá, Mundo!");
+            start = to_ms_since_boot(get_absolute_time());
+        }
+        wifi_driver_poll();
+        sleep_ms(100);
     }
+
+    wifi_driver_deinit();
+    return 0;
 }

@@ -4,6 +4,7 @@
 #include "lwip/apps/mqtt.h"
 #include "../wifi/wifi_driver.h"
 #include "mqtt_client.h"
+#include "config.h"
 #include "secrets.h"
 
 mqtt_client_t *client;
@@ -31,8 +32,9 @@ void mqtt_init() {
     ip4addr_aton(MQTT_SERVER_IP, &ipaddr);
     err_t err;
 
+    wifi_driver_lwip_begin();
     err = mqtt_client_connect(client, &ipaddr, MQTT_PORT, mqtt_connection_cb, &client, &client_info);
-
+    wifi_driver_lwip_end();
     if (err != ERR_OK) {
         printf("Erro ao conectar ao servidor MQTT\n");
     }
@@ -49,7 +51,9 @@ void mqtt_pub_request_cb(void *arg, err_t result) {
 void mqtt_client_publish(char *topic, char *data) {
     uint8_t qos = 1;
     uint8_t retain = 0;
+    wifi_driver_lwip_begin();
     err_t err = mqtt_publish(client, topic, data, strlen(data), qos, retain, mqtt_pub_request_cb, NULL);
+    wifi_driver_lwip_end();
     if (err != ERR_OK) {
         printf("Erro %d ao publicar no tópico %s\n", err, topic);
     }

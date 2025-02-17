@@ -36,12 +36,7 @@ project(${PROJECT_NAME} C CXX ASM)
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
-add_executable(${PROJECT_NAME} main.c
-        inc/led_rgb/led.c 
-        inc/buzzer/buzzer.c 
-        inc/alarm/alarm.c 
-        inc/aht10/aht.c
-        )
+add_executable(${PROJECT_NAME} main.c)
 
 pico_set_program_name(${PROJECT_NAME} "U7_projeto_final")
 pico_set_program_version(${PROJECT_NAME} "0.1")
@@ -68,6 +63,7 @@ target_link_libraries(${PROJECT_NAME}
         hardware_adc
         pico_cyw43_arch_lwip_threadsafe_background
         pico_lwip_mqtt
+        pico_multicore
         )
 
 add_subdirectory(inc)

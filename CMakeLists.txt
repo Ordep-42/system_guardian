@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(U7_projeto_final main.c inc/wifi/wifi_driver.c)
+add_executable(U7_projeto_final main.c inc/wifi/wifi_driver.c inc/mqtt/mqtt_client.c)
 
 pico_set_program_name(U7_projeto_final "U7_projeto_final")
 pico_set_program_version(U7_projeto_final "0.1")

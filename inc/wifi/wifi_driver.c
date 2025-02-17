@@ -19,10 +19,9 @@ int wifi_driver_connect(const char *ssid, const char *pass, uint32_t timeout_ms)
     return cyw43_arch_wifi_connect_timeout_ms(ssid, pass, CYW43_AUTH_WPA2_AES_PSK, timeout_ms);
 }
 
-uint8_t* wifi_driver_get_ip_address() {
+ip_addr_t* wifi_driver_get_ip_address() {
     if (wifi_driver_is_connected()) {
-        uint8_t *ip_address = (uint8_t*)&(cyw43_state.netif[0].ip_addr.addr);
-        return ip_address;
+        return &(cyw43_state.netif[0].ip_addr); 
     }
     return NULL;
 }

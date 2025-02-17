@@ -80,7 +80,7 @@ int main() {
         }
         
         wifi_driver_poll();
-        sleep_ms(100);
+        sleep_ms(1000);
     }
 
     wifi_driver_deinit();

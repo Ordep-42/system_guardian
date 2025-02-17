@@ -6,6 +6,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(PROJECT_NAME U7_projeto_final)
+
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
 
@@ -28,44 +30,47 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(U7_projeto_final C CXX ASM)
+project(${PROJECT_NAME} C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
-add_executable(U7_projeto_final 
-        main.c 
+add_executable(${PROJECT_NAME} main.c
         inc/led_rgb/led.c 
         inc/buzzer/buzzer.c 
         inc/alarm/alarm.c 
         inc/aht10/aht.c
         )
 
-pico_set_program_name(U7_projeto_final "U7_projeto_final")
-pico_set_program_version(U7_projeto_final "0.1")
+pico_set_program_name(${PROJECT_NAME} "U7_projeto_final")
+pico_set_program_version(${PROJECT_NAME} "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(U7_projeto_final 0)
-pico_enable_stdio_usb(U7_projeto_final 1)
+pico_enable_stdio_uart(${PROJECT_NAME} 0)
+pico_enable_stdio_usb(${PROJECT_NAME} 1)
 
 # Add the standard library to the build
-target_link_libraries(U7_projeto_final
+target_link_libraries(${PROJECT_NAME}
         pico_stdlib)
 
 # Add the standard include files to the build
-target_include_directories(U7_projeto_final PRIVATE
+target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
-target_link_libraries(U7_projeto_final 
+target_link_libraries(${PROJECT_NAME} 
         hardware_i2c
         hardware_timer
         hardware_clocks
         hardware_pwm
         hardware_adc
+        pico_cyw43_arch_lwip_threadsafe_background
+        pico_lwip_mqtt
         )
 
-pico_add_extra_outputs(U7_projeto_final)
+add_subdirectory(inc)
+
+pico_add_extra_outputs(${PROJECT_NAME})
 
